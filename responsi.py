@@ -1,3 +1,4 @@
+# bukan python kalo ga import
 import os
 from tabulate import tabulate
 import pandas as pd
@@ -35,6 +36,9 @@ class perpus:
         self.peminjam = peminjam
         self.jumlah_dipinjam = jumlah_dipinjam
 
+    # =========================
+    # = nambah buku baru
+    # =========================
     def tambah():
         bersih()
         while True:
@@ -69,6 +73,9 @@ class perpus:
         input("Buku berhasil ditambahkan\nTekan enter untuk lanjut...")
         return df_perpus
 
+        # =========================
+        # = sesuai nama function, nampilin semua dataframe buku
+        # =========================
     def tampil():
         bersih()
         welcome("Daftar Buku")
@@ -79,6 +86,8 @@ class perpus:
         while True:
             welcome("Pinjam buku")
             user = str(input("Masukkan nama peminjam : "))
+            
+            # validasi...
             if (user == "") or (user == " "):
                 bersih()
                 print("User tidak boleh kosong!\n\n")
@@ -86,13 +95,14 @@ class perpus:
 
             judul = input("Masukkan judul buku : ").strip()
             penulis = input("Masukkan penulis buku : ").strip()
+            # (flow) skip ke bagian akhir function pinjam, lompat jauh banget
 
             # =========================
             # = Nyari buku buat guide isbn lebih gampang
             # =========================
             def cari(df, judul, penulis):
                 judul, penulis = judul.lower(), penulis.lower()
-                
+            
                 hasil_cari = df[
                     (df_perpus["Judul"].str.lower().str.contains(judul, na=False)) &
                     (df_perpus["Penulis"].str.lower().str.contains(penulis, na=False))
@@ -102,14 +112,13 @@ class perpus:
                     print("Buku berhasil dicari...\n")
 
                     while True:
-                        print(tabulate(hasil_cari, headers="keys", tablefmt="fancy_grid", showindex=False))
+                        print(tabulate(hasil_cari, headers="keys", tablefmt="fancy_grid", showindex=False)) # nampilin (beberapa) buku
 
                         try:
                             isbn_pinjam =  int(input("Masukkan isbn buku yang ingin dipinjam! (lengkap)\n>> "))
                         except ValueError:
                             bersih()
                             # balik ke awal jika input tidak int
-                            # print(tabulate(hasil_cari, headers="keys", tablefmt="fancy_grid", showindex=False))
                             print("ISBN harus berupa angka! (int)")
                             continue
                         
@@ -118,6 +127,7 @@ class perpus:
                         if not df_perpus_filtered.empty:
                             break
                 else:
+                    # balik ke home
                     print("Buku tidak terdata / tersedia")
                     out()
                     bersih()
@@ -137,26 +147,28 @@ class perpus:
                     bersih()
                     print("ISBN yang anda tulis tidak sesuai\n")
                     while True:
+                        # kalo nulis isbn nguawor / kosong masuk sini, konfirmasi, mau masukin ulang apa nggak
                         confirmation = input("Kemabli ke menu utama? (y/n)").lower()
                         match confirmation:
-                            case "y":
+                            case "y": # balik ke home
                                 bersih()
                                 main()
-                            case "n":
+                            case "n": # balik ke menu pinjam
                                 bersih()
                                 perpus.pinjam()
-                            case _:
+                            case _: # opsi y sama n doang bang
                                 bersih()
                                 print("Input tidak diketahui\n")
                                 continue
 
                 while True:
+                    # tidak bosan-bosasn aku meminta konfirmasi
                     confirmation = input("Anda yakin ingin meminjam? (y/n)\n>> ")
 
                     match confirmation:
-                        case "y":
-
+                        case "y": # mumet counter : 3
                             while True:
+                                # konfirmasi mau pinjem berapa buku, sekalian validasi kalo inputmu aneh-aneh
                                 try:
                                     jumlah_dipinjam = int(input("Berapa jumlah buku yang ingin di pinjam? (maks 3)\n>> "))
                                 except ValueError:
@@ -165,7 +177,7 @@ class perpus:
                                     print(tabulate(df_perpus_filtered, headers="keys", tablefmt="fancy_grid", showindex=False))
                                     continue
 
-                                if jumlah_dipinjam > 3:
+                                if jumlah_dipinjam > 3: # udah dibilangin lo
                                     bersih()
                                     print("Jumlah maks peminjaman adalah 3 buku sekaligus!\n")
                                     print(tabulate(df_perpus_filtered, headers="keys", tablefmt="fancy_grid", showindex=False))
@@ -175,32 +187,35 @@ class perpus:
                                 # = cek dan update stok
                                 # =========================
                                 if (df_perpus_filtered["Stok"] >= jumlah_dipinjam).any():
+                                    # ngurangin stok buku
                                     df_perpus.loc[df_perpus["ISBN"] == isbn_pinjam, "Stok"] -= jumlah_dipinjam
                                     print("Buku berhasil dipinjam...")
                                     out()
                                     bersih()
                                     break
-                                else:
+                                else: # kalo mau pinjem tapi ngelebihin stok buku masuk sini
                                     while True:
                                         print("\nStok buku tidak memadai!\n")
 
+                                        # karena stok buku kurang, disini nanyain lagi
                                         try:
                                             confirmation = int(input("1. Ubah jumlah buku yang ingin dipinjam\n2. Kembali ke Menu Pinjam\n3. Kembali ke Menu Utama\n>> "))
-                                        except ValueError:
+                                        except ValueError: # input int, take it or leave it
                                             bersih()
                                             print("Opsi tidak di ketahui")
                                             continue
                                             
                                         if confirmation == 1:
                                             bersih()
+                                            # ku tampilin lagi biar ngeh stok bukunya ada berapa
                                             print(tabulate(df_perpus_filtered, headers="keys", tablefmt="fancy_grid", showindex=False))
                                             break
-                                        elif confirmation == 2:
+                                        elif confirmation == 2: # kalau mau ganti buku
                                             bersih()
                                             perpus.pinjam()
-                                        elif confirmation == 3:
+                                        elif confirmation == 3: # sesuai nama function, balik ke home
                                             main()
-                                        else:
+                                        else: # :(
                                             bersih()
                                             print("Input tidak diketahui\n")
                                             continue
@@ -212,6 +227,7 @@ class perpus:
                             # = nambah daftar peminjam
                             # =========================
                             global df_peminjam
+                            # kalo tadi main-main sama dataframe buku, sekarang ganti mainin dataframe orang yang pinjem
                             df_peminjam_baru = pd.DataFrame([[user,
                                                             df_perpus_filtered["Judul"].iloc[0],
                                                             df_perpus_filtered["Penulis"].iloc[0],
@@ -220,16 +236,18 @@ class perpus:
                                                             columns=["Peminjam", "Judul", "Penulis", "ISBN", "Jumlah_yang_dipinjam"])
                             df_peminjam = pd.concat([df_peminjam, df_peminjam_baru], ignore_index=True)
                             return df_peminjam
-                        case "n":
+                        case "n": # ya ini kalo gajadi minjem
                             bersih()
                             main()
-                        case _:
+                        case _: # input cuman y sama n mas
                             bersih()
                             print("Input tidak diketahui\n")
                             print(tabulate(df_perpus_filtered, headers="keys", tablefmt="fancy_grid", showindex=False))
                             continue
             
             bersih()
+            # balik ke awal setela nanyain judul sama penulis
+            # masuk ke function cari dan seterusnya
             cari(df_perpus, judul, penulis)
             break
         
