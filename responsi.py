@@ -3,10 +3,17 @@ import os
 import time
 from tabulate import tabulate
 import pandas as pd
-# path1 = r"C:\Users\Thin\Documents\csv\perpustakaan.csv"
-# path2 = r"C:\Users\Thin\Documents\csv\peminjam.csv"
-# data = pd.read_csv(path1)
-# data_peminjam = pd.read_csv(path2)
+path1 = ".\csv\perpustakaan.csv"
+df_perpus = pd.read_csv(path1, sep=";")
+path2 = ".\csv\peminjam.csv"
+df_peminjam = pd.read_csv(path2, sep=";")
+
+# dummy
+# data = [["10 dosa besar Soeharto", "Liotohe", 123456789, 5]]
+# df_perpus = pd.DataFrame(data, columns=["Judul", "Penulis", "ISBN", "Stok"])
+
+# data =[["khairil", "10 dosa besar Jokowi", "Liothe", 987654321, 3]]
+# df_peminjam = pd.DataFrame(data, columns=["Peminjam", "Judul", "Penulis", "ISBN", "Jumlah_yang_dipinjam"])
 
 # ========================================================================================
 def title():
@@ -19,13 +26,6 @@ def title():
           |                                     |
         +-----------------------------------------+
         ''')
-
-# dummy
-data = [["10 dosa besar Soeharto", "Liotohe", 123456789, 5]]
-df_perpus = pd.DataFrame(data, columns=["Judul", "Penulis", "ISBN", "Stok"])
-
-data =[["khairil", "10 dosa besar Jokowi", "Liothe", 987654321, 3]]
-df_peminjam = pd.DataFrame(data, columns=["Peminjam", "Judul", "Penulis", "ISBN", "Jumlah_yang_dipinjam"])
 
 # ========================================================================================
 class perpus:
@@ -316,7 +316,7 @@ class perpus:
                         print("Buku berhasil dihapus...")
                         out()
                         bersih()
-                        main()
+                        break
                     case "n":
                         bersih()
                         main()
@@ -331,8 +331,6 @@ class perpus:
             out()
             bersih()
             main()
-        out()
-        bersih()
 
 # ========================================================================================
 def out():
@@ -372,17 +370,16 @@ def main():
             case 3:
                 bersih()
                 perpus.hapus()
-                continue
             case 4:
                 bersih()
                 perpus.pinjam()
-                continue
             case 5:
                 bersih()
                 perpus.peminjam()
-                continue
             case 6:
                 print("\n\nTerimakasih telah menggunakan program ini")
+                df_perpus.to_csv(path1, sep=";", index=False)
+                df_peminjam.to_csv(path2, sep=";", index=False)
                 print("Program akan tertutup secara otomatis")
                 for i in range(3,0,-1):
                     print(i)
@@ -394,6 +391,7 @@ def main():
                 bersih()
                 print("Input tidak diketahui\n")
                 continue
+    print("Anjay")
 
 if __name__ == "__main__":
     bersih()
