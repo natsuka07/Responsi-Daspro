@@ -3,6 +3,7 @@ import os
 import time
 from tabulate import tabulate
 import pandas as pd
+# path
 path1 = ".\csv\perpustakaan.csv"
 df_perpus = pd.read_csv(path1, sep=";")
 path2 = ".\csv\peminjam.csv"
@@ -256,13 +257,6 @@ class perpus:
     def peminjam():
         bersih()
         welcome("Daftar Peminjam buku")
-        # global df_peminjam
-        # if isinstance(df_peminjam, pd.Series):
-        #     df_peminjam = df_peminjam.to_frame().T  # Convert row-like Series to DataFrame
-        # elif isinstance(df_peminjam, pd.DataFrame):
-        #     pass  # Already good
-        # else:
-        #     df_peminjam = pd.DataFrame(df_peminjam)  # Fallback
         print(tabulate(df_peminjam, headers="keys", tablefmt="fancy_grid", showindex=False))
         print("\n")
         out()
@@ -271,12 +265,14 @@ class perpus:
     def hapus():
         perpus.tampil()    
         judul = input("Masukkan judul buku yang ingin dihapus : ").strip()
+        # searching berdasarkan judul
         global df_perpus
         hasil_cari = df_perpus[df_perpus["Judul"].str.lower().str.contains(judul, na=False)]
         bersih()
         if not hasil_cari.empty:
             print(tabulate(hasil_cari, headers="keys", tablefmt="fancy_grid", showindex=False))
 
+            # mirip sama yang minjem
             try:
                 isbn_hapus = int(input("Masukkan isbn buku yang mau dihapus! (lengkap)\n>> "))
             except ValueError:
@@ -293,7 +289,7 @@ class perpus:
                 print("ISBN yang anda tulis tidak sesuai\n")
                 while True:
                     # kalo nulis isbn nguawor / kosong masuk sini, konfirmasi, mau masukin ulang apa nggak
-                    confirmation = input("Kemabli ke menu utama? (y/n)").lower()
+                    confirmation = input("Kembali ke menu utama? (y/n)").lower()
                     match confirmation:
                         case "y": # balik ke home
                             bersih()
@@ -310,8 +306,9 @@ class perpus:
                 confirmation = input("Anda yakin ingin menghapus buku di atas? (y/n)").lower()
                 match confirmation:
                     case "y":
-                        isbn_yang_dihapus = df_perpus_filtered.iloc[0]["ISBN"]
-                        df_perpus =  df_perpus[df_perpus["ISBN"] != isbn_yang_dihapus]
+                        # hapus data
+                        isbn_yang_dihapus = df_perpus_filtered.iloc[0]["ISBN"] # indexing yang mau dihapus (tadi udah di konfirmasi di atas kalo cuman ada 1 entry buku, pas masukin isbn)
+                        df_perpus =  df_perpus[df_perpus["ISBN"] != isbn_yang_dihapus] # karena pake negasi, jadi yang true itu semunya kecuali yang udah di index tadi
 
                         print("Buku berhasil dihapus...")
                         out()
@@ -378,6 +375,7 @@ def main():
                 perpus.peminjam()
             case 6:
                 print("\n\nTerimakasih telah menggunakan program ini")
+                # nyimpen/write
                 df_perpus.to_csv(path1, sep=";", index=False)
                 df_peminjam.to_csv(path2, sep=";", index=False)
                 print("Program akan tertutup secara otomatis")
@@ -396,3 +394,20 @@ def main():
 if __name__ == "__main__":
     bersih()
     main()
+
+# Kelemahan
+# 1. Ga rapi
+# 2. fitur search lossy (semisal nginput judul, itu kalo cuman ngiput sehuruf doang keluar semua judul yang punya itu huruf) - (bener lossy apa bukan sih term-nya)
+# 3. kurang fitur denda (import lagi jir - datetime)
+# 4. gabisa nambah stok (dihapus dulu, baru nambahh lagi)
+# 5. dari nomer 4, kalo ga dihapus datanya duplikat
+# 6. Ga rapi
+# 7. wareg validasi input
+# 8. (mungkin) ada bug ngeloop sendiri - ga ke cover pas testing sendiri, maaf mas
+# 9. Ga rapi
+# 10. Fungsi sekali pake
+# 11. di menu pinjam buku, user bisa input spasi dua kali buat bypass input kosong
+# 12. ga ada fitur ngembaliin, itu peminjam abadi
+
+# Tahu, tahu apa yang gampang di bikin? - Tahu Easy
+# Jangan suka ngurusin hidup orang, belum tentu orangnya mau kurus
