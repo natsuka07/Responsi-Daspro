@@ -1,5 +1,6 @@
 # bukan python kalo ga import
 import os
+import time
 from tabulate import tabulate
 import pandas as pd
 # path1 = r"C:\Users\Thin\Documents\csv\perpustakaan.csv"
@@ -267,6 +268,72 @@ class perpus:
         out()
         bersih()
 
+    def hapus():
+        perpus.tampil()    
+        judul = input("Masukkan judul buku yang ingin dihapus : ").strip()
+        global df_perpus
+        hasil_cari = df_perpus[df_perpus["Judul"].str.lower().str.contains(judul, na=False)]
+        bersih()
+        if not hasil_cari.empty:
+            print(tabulate(hasil_cari, headers="keys", tablefmt="fancy_grid", showindex=False))
+
+            try:
+                isbn_hapus = int(input("Masukkan isbn buku yang mau dihapus! (lengkap)\n>> "))
+            except ValueError:
+                print("ISBN harus berupa angka! (int)")
+            
+            filter_search = df_perpus["ISBN"] == isbn_hapus
+            df_perpus_filtered =  df_perpus[filter_search]
+
+            if not df_perpus_filtered.empty:
+                bersih()
+                print(tabulate(df_perpus_filtered, headers="keys", tablefmt="fancy_grid", showindex=False))
+            
+            else:
+                print("ISBN yang anda tulis tidak sesuai\n")
+                while True:
+                    # kalo nulis isbn nguawor / kosong masuk sini, konfirmasi, mau masukin ulang apa nggak
+                    confirmation = input("Kemabli ke menu utama? (y/n)").lower()
+                    match confirmation:
+                        case "y": # balik ke home
+                            bersih()
+                            main()
+                        case "n": # balik ke menu pinjam
+                            bersih()
+                            perpus.hapus()
+                        case _: # opsi y sama n doang bang
+                            bersih()
+                            print("Input tidak diketahui\n")
+                            continue
+            
+            while True:
+                confirmation = input("Anda yakin ingin menghapus buku di atas? (y/n)").lower()
+                match confirmation:
+                    case "y":
+                        isbn_yang_dihapus = df_perpus_filtered.iloc[0]["ISBN"]
+                        df_perpus =  df_perpus[df_perpus["ISBN"] != isbn_yang_dihapus]
+
+                        print("Buku berhasil dihapus...")
+                        out()
+                        bersih()
+                        main()
+                    case "n":
+                        bersih()
+                        main()
+                    case _:
+                        bersih()
+                        print("Input tidak diketahui\n")
+                        print(tabulate(df_perpus_filtered, headers="keys", tablefmt="fancy_grid", showindex=False))
+                        continue
+
+        else:
+            print("Buku tidak dapat ditemukan!")
+            out()
+            bersih()
+            main()
+        out()
+        bersih()
+
 # ========================================================================================
 def out():
     input("Tekan Enter untuk lanjut...")    
@@ -284,7 +351,7 @@ def main():
     while True:
         title()
         try:
-            print("Opsi\n1. Tambah buku\n2. Tampilkan daftar buku\n3. Pinjam\n4. Tampilkan daftar peminjam\n5. Keluar Program")
+            print("Opsi\n1. Tambah buku\n2. Tampilkan daftar buku\n3. Hapus buku\n4. Pinjam\n5. Tampilkan daftar peminjam\n6. Keluar Program")
             opsi = int(input("Masukkan opsi : "))
         except ValueError:
             bersih()
@@ -304,12 +371,22 @@ def main():
                 continue
             case 3:
                 bersih()
-                perpus.pinjam()
+                perpus.hapus()
+                continue
             case 4:
                 bersih()
-                perpus.peminjam()
+                perpus.pinjam()
+                continue
             case 5:
+                bersih()
+                perpus.peminjam()
+                continue
+            case 6:
                 print("\n\nTerimakasih telah menggunakan program ini")
+                print("Program akan tertutup secara otomatis")
+                for i in range(3,0,-1):
+                    print(i)
+                    time.sleep(1)
                 break
             case 99:
                 pass
