@@ -69,8 +69,6 @@ class perpus:
         global df_perpus
         df_buku_baru = pd.DataFrame([[judul, penulis, isbn, stok]],
                                     columns=["Judul", "Penulis", "ISBN", "Stok"])
-        # buku_baru = [judul, penulis, isbn, stok]
-        # df_buku_baru = pd.DataFrame(buku_baru, columns=["Judul", "Penulis", "ISBN", "Stok"])
         df_perpus = pd.concat([df_perpus, df_buku_baru], ignore_index=1)
         input("Buku berhasil ditambahkan\nTekan enter untuk lanjut...")
         return df_perpus
@@ -379,8 +377,10 @@ def main():
                 df_perpus.to_csv(path1, sep=";", index=False)
                 df_peminjam.to_csv(path2, sep=";", index=False)
                 print("Program akan tertutup secara otomatis")
-                for i in range(3,0,-1):
-                    print(i)
+                list_keluar = ["Selamat", "Berjuang", "Sukses"]
+                for i in range(len(list_keluar)):
+                    kata = list_keluar[i]
+                    print(kata)
                     time.sleep(1)
                 break
             case 99:
@@ -389,7 +389,6 @@ def main():
                 bersih()
                 print("Input tidak diketahui\n")
                 continue
-    print("Anjay")
 
 if __name__ == "__main__":
     bersih()
