@@ -4,17 +4,11 @@ import time
 from tabulate import tabulate
 import pandas as pd
 # path
+# pastikan ngerun code di dalam folder dimana file py berada (cd ke folder jika belum)
 path1 = ".\csv\perpustakaan.csv"
 df_perpus = pd.read_csv(path1, sep=";")
 path2 = ".\csv\peminjam.csv"
 df_peminjam = pd.read_csv(path2, sep=";")
-
-# dummy
-# data = [["10 dosa besar Soeharto", "Liotohe", 123456789, 5]]
-# df_perpus = pd.DataFrame(data, columns=["Judul", "Penulis", "ISBN", "Stok"])
-
-# data =[["khairil", "10 dosa besar Jokowi", "Liothe", 987654321, 3]]
-# df_peminjam = pd.DataFrame(data, columns=["Peminjam", "Judul", "Penulis", "ISBN", "Jumlah_yang_dipinjam"])
 
 # ========================================================================================
 def title():
