@@ -150,6 +150,7 @@ class perpus:
                             case "n": # balik ke menu pinjam
                                 bersih()
                                 perpus.pinjam()
+                                break
                             case _: # opsi y sama n doang bang
                                 bersih()
                                 print("Input tidak diketahui\n")
@@ -376,9 +377,7 @@ def main():
                     kata = list_keluar[i]
                     print(kata)
                     time.sleep(1)
-                break
-            case 99:
-                pass
+                os._exit(0)
             case _:
                 bersih()
                 print("Input tidak diketahui\n")
